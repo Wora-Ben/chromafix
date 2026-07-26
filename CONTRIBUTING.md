@@ -23,8 +23,10 @@ npm test
 2. Branch from `main`.
 3. Keep the core dependency-free and SSR-safe (guard every DOM access).
 4. Add or update tests (`npm test`) and make sure `npm run typecheck` passes.
-5. For anything that changes the on-screen result, sanity-check
-   `examples/vanilla.html` in a browser after `npm run build`.
+5. For anything that changes the on-screen result, sanity-check the demo: serve
+   `demo/` (for example `npx serve demo`) and open it in a browser. It loads the
+   published package, so point its import at `../dist/index.js` after
+   `npm run build` when you need to see unreleased changes.
 6. Update `CHANGELOG.md` under the unreleased heading.
 
 ## Accessibility bar

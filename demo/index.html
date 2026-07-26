@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chromafix Demo</title>
+    <meta
+      name="description"
+      content="Live demo of chromafix-a11y: a tiny colorblind-safe palette switcher. Pick a color-vision-deficiency type and watch a UI recolor to a distinguishable palette."
+    />
+    <link rel="icon" href="./chromafix-logo.jpg" />
+    <meta property="og:title" content="chromafix — colorblind-safe palette switcher" />
+    <meta
+      property="og:description"
+      content="Pick a color-vision-deficiency type and watch a UI recolor to a distinguishable palette. Zero dependencies."
+    />
+    <meta property="og:image" content="./chromafix-logo.jpg" />
+    <style>
+      /* ---- Page shell: fixed identity, deliberately NOT remapped ---- */
+      :root {
+        --ink: #0b0e14;
+        --ink-2: #11151f;
+        --line: #232a39;
+        --fg: #e8ecf4;
+        --fg-dim: #8b97ad;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--ink);
+        color: var(--fg);
+        font-family: var(--sans);
+        line-height: 1.6;
+        background-image:
+          linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 72px 72px;
+        background-position: -1px -1px;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(120% 80% at 50% 0%, transparent 30%, var(--ink) 78%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 0 clamp(1.1rem, 4vw, 2.5rem);
+      }
+
+      /* ---- Header ---- */
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.5rem 0;
+        flex-wrap: wrap;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        font-family: var(--mono);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      /* White-backed JPG logo, set in a light badge so it reads on the dark shell. */
+      .mark {
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: #fff;
+        border-radius: 32%;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.16),
+          0 6px 20px rgba(0, 0, 0, 0.45);
+      }
+      /* The source is a non-square JPG: contain it so it never breaks the clip. */
+      .mark img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .mark--sm { width: 34px; height: 34px; padding: 4px; }
+      .links {
+        display: flex;
+        gap: 1.1rem;
+        font-family: var(--mono);
+        font-size: 0.85rem;
+      }
+      .links a { color: var(--fg-dim); text-decoration: none; }
+      .links a:hover { color: var(--fg); }
+
+      /* ---- Hero ---- */
+      .hero { padding: clamp(1.75rem, 5vw, 3rem) 0 clamp(2rem, 5vw, 3rem); }
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--fg-dim);
+        margin: 0 0 1.1rem;
+      }
+      h1 {
+        font-size: clamp(2rem, 5.5vw, 3.35rem);
+        line-height: 1.06;
+        letter-spacing: -0.035em;
+        margin: 0 0 1.1rem;
+        max-width: 22ch;
+      }
+      .strip {
+        display: inline-flex;
+        height: 0.62em;
+        width: 2.6em;
+        border-radius: 999px;
+        overflow: hidden;
+        vertical-align: baseline;
+        translate: 0 0.02em;
+      }
+      .strip i { flex: 1; }
+      .lede {
+        font-size: 1.08rem;
+        color: var(--fg-dim);
+        max-width: 62ch;
+        margin: 0 0 1.6rem;
+      }
+      .lede code {
+        font-family: var(--mono);
+        font-size: 0.92em;
+        color: var(--fg);
+        background: var(--ink-2);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 0.08em 0.36em;
+      }
+      .cta {
+        display: flex;
+        gap: 0.9rem;
+        flex-wrap: wrap;
+        align-items: center;
+        font-family: var(--mono);
+        font-size: 0.88rem;
+      }
+      .install {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: var(--ink-2);
+        border: 1px solid var(--line);
+        border-radius: 9px;
+        padding: 0.6rem 0.9rem;
+        color: var(--fg);
+      }
+      .install span { color: var(--fg-dim); }
+      .ghost {
+        color: var(--fg-dim);
+        text-decoration: none;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 2px;
+      }
+      .ghost:hover { color: var(--fg); border-color: var(--fg-dim); }
+
+      /* ---- Section scaffolding ---- */
+      section + section { margin-top: clamp(3rem, 7vw, 4.5rem); }
+      .shead {
+        display: flex;
+        align-items: baseline;
+        gap: 0.8rem;
+        margin: 0 0 1.2rem;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--fg-dim);
+      }
+      .shead::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+
+      /* ---- Live preview panel (the recolor target) ---- */
+      .hint {
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        color: var(--fg-dim);
+        margin: 0 0 1rem;
+      }
+      .hint b { color: var(--fg); font-weight: 600; }
+
+      #preview {
+        /* These are what chromafix remaps. Defaults = a neutral "brand". */
+        --pv-bg: #ffffff;
+        --pv-surface: #eff2f7;
+        --pv-border: #dbe1ea;
+        --pv-text: #16202e;
+        --pv-muted: #5d6b80;
+        --pv-primary: #6d4aff;
+
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--pv-bg);
+        color: var(--pv-text);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* Dark base tokens. chromafix writes inline styles, which outrank this
+         rule while a type is active, then hands it back on "Off". */
+      #preview[data-scheme="dark"] {
+        --pv-bg: #0f1218;
+        --pv-surface: #171b23;
+        --pv-border: #2b323f;
+        --pv-text: #e9edf5;
+        --pv-muted: #94a1b5;
+        --pv-primary: #8b6cff;
+      }
+
+      .scheme {
+        margin-left: auto;
+        display: flex;
+        gap: 2px;
+        padding: 2px;
+        background: var(--pv-bg);
+        border: 1px solid var(--pv-border);
+        border-radius: 999px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .scheme button {
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        letter-spacing: 0.04em;
+        padding: 0.22rem 0.62rem;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--pv-muted);
+        cursor: pointer;
+      }
+      .scheme button[aria-pressed="true"] {
+        background: var(--pv-primary);
+        color: var(--pv-bg);
+      }
+      .scheme button:focus-visible {
+        outline: 2px solid var(--pv-primary);
+        outline-offset: 2px;
+      }
+      .pv-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.7rem 0.95rem;
+        background: var(--pv-surface);
+        border-bottom: 1px solid var(--pv-border);
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .pv-bar i {
+        width: 10px; height: 10px; border-radius: 50%;
+        background: var(--pv-border);
+      }
+      .pv-bar i:first-child { background: var(--pv-primary); }
+      .pv-bar b {
+        margin-left: 0.5rem;
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        font-weight: 500;
+        color: var(--pv-muted);
+      }
+      .pv-body {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        gap: clamp(1rem, 3vw, 2rem);
+        padding: clamp(1.2rem, 3.5vw, 2rem);
+      }
+      @media (max-width: 680px) { .pv-body { grid-template-columns: 1fr; } }
+
+      .pv-body h2 {
+        font-size: clamp(1.35rem, 3.4vw, 1.85rem);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.6rem;
+      }
+      .pv-body h2 em { font-style: normal; color: var(--pv-primary); }
+      .pv-body p { color: var(--pv-muted); margin: 0 0 1.1rem; font-size: 0.97rem; }
+      .pv-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+      .pv-btn {
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.55rem 1.1rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        background: var(--pv-primary);
+        color: var(--pv-bg);
+        cursor: pointer;
+      }
+      .pv-btn--alt {
+        background: transparent;
+        color: var(--pv-text);
+        border-color: var(--pv-border);
+      }
+      .pv-card {
+        background: var(--pv-surface);
+        border: 1px solid var(--pv-border);
+        border-radius: 12px;
+        padding: 1rem 1.1rem;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .pv-card h3 {
+        margin: 0 0 0.7rem;
+        font-size: 0.74rem;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--pv-muted);
+        font-family: var(--mono);
+      }
+      .pv-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.42rem 0;
+        font-size: 0.92rem;
+        border-top: 1px solid var(--pv-border);
+      }
+      .pv-row:first-of-type { border-top: 0; }
+      .pv-row span { color: var(--pv-muted); }
+      .pv-row b { color: var(--pv-primary); font-variant-numeric: tabular-nums; }
+      .pv-meter {
+        height: 6px;
+        border-radius: 999px;
+        background: var(--pv-border);
+        margin-top: 0.85rem;
+        overflow: hidden;
+      }
+      .pv-meter i { display: block; height: 100%; width: 68%; background: var(--pv-primary); }
+
+      /* ---- Palette reference grid ---- */
+      .pals { display: grid; gap: 0.55rem; }
+      .pal {
+        display: grid;
+        grid-template-columns: 190px 1fr;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.55rem 0.75rem;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--ink-2);
+      }
+      @media (max-width: 560px) {
+        .pal { grid-template-columns: 1fr; gap: 0.5rem; }
+      }
+      .pal__meta { font-family: var(--mono); font-size: 0.8rem; }
+      .pal__meta b { display: block; font-weight: 600; }
+      .pal__meta span { color: var(--fg-dim); font-size: 0.94em; }
+      .pal__chips { display: flex; gap: 4px; }
+      .pal__chips i {
+        flex: 1;
+        height: 30px;
+        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+      }
+
+      /* ---- Code ---- */
+      pre {
+        margin: 0;
+        padding: 1.15rem 1.25rem;
+        background: var(--ink-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 0.855rem;
+        line-height: 1.7;
+        color: #cfd8e6;
+      }
+      pre .c { color: #6b7689; }
+      pre .k { color: #7aa2f7; }
+      pre .s { color: #9ece6a; }
+
+      footer {
+        margin-top: clamp(3rem, 7vw, 4.5rem);
+        padding: 1.6rem 0 2.6rem;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--fg-dim);
+      }
+      footer a { color: var(--fg-dim); }
+      footer a:hover { color: var(--fg); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <span class="mark mark--sm"><img src="./chromafix-logo.jpg" alt="" /></span>
+          chromafix
+        </div>
+        <nav class="links">
+          <a href="https://www.npmjs.com/package/chromafix-a11y">npm</a>
+          <a href="https://github.com/Wora-Ben/chromafix">github</a>
+          <a href="https://github.com/Wora-Ben/chromafix#readme">docs</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Colorblind accessibility · 7 palettes · 0 dependencies</p>
+        <h1>
+          Swap your palette,
+          <span class="strip" aria-hidden="true"
+            ><i style="background: #0072b2"></i><i style="background: #009e73"></i
+            ><i style="background: #e69f00"></i><i style="background: #d55e00"></i
+            ><i style="background: #cc3d8f"></i></span
+          >
+          not your pixels.
+        </h1>
+        <p class="lede">
+          chromafix remaps the CSS variables your UI already uses. Pick a
+          color-vision-deficiency type and every token flips to a palette that stays
+          distinguishable, instantly and with no filter. Try it on the
+          <code>#preview</code> panel below.
+        </p>
+        <div class="cta">
+          <div class="install"><span>$</span> npm i chromafix-a11y</div>
+          <a class="ghost" href="https://github.com/Wora-Ben/chromafix#readme">read the docs →</a>
+        </div>
+      </section>
+
+      <section>
+        <p class="shead">Live preview</p>
+        <p class="hint">
+          Open the <b>eye button</b> at the bottom-right and choose a vision type. Only
+          this panel is targeted, so you can compare it against the page around it.
+          Your choice persists on reload. Switch the panel's own base theme with
+          <b>light / dark</b>: the seven palettes are light-first, so an active type
+          renders light in either mode.
+        </p>
+
+        <div id="preview">
+          <div class="pv-bar">
+            <i></i><i></i><i></i><b>your-app.com</b>
+            <div class="scheme" role="group" aria-label="Preview base theme">
+              <button type="button" data-scheme="light" aria-pressed="true">light</button>
+              <button type="button" data-scheme="dark" aria-pressed="false">dark</button>
+            </div>
+          </div>
+          <div class="pv-body">
+            <div>
+              <h2>Ship interfaces <em>everyone</em> can read.</h2>
+              <p>
+                Buttons, links, borders, meters and body copy all draw from the same six
+                tokens, so a single switch recolors the entire surface coherently.
+              </p>
+              <div class="pv-actions">
+                <button class="pv-btn" type="button">Get started</button>
+                <button class="pv-btn pv-btn--alt" type="button">Documentation</button>
+              </div>
+            </div>
+            <div class="pv-card">
+              <h3>Contrast audit</h3>
+              <div class="pv-row"><span>Body text</span><b>12.4:1</b></div>
+              <div class="pv-row"><span>Muted text</span><b>5.9:1</b></div>
+              <div class="pv-row"><span>Primary</span><b>4.8:1</b></div>
+              <div class="pv-meter"><i></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <p class="shead">The seven palettes</p>
+        <div class="pals" id="pals"></div>
+      </section>
+
+      <section>
+        <p class="shead">Wiring it up</p>
+        <pre><span class="c">// map your existing variables to semantic roles</span>
+<span class="k">import</span> { createChromafix } <span class="k">from</span> <span class="s">"chromafix-a11y"</span>;
+
+createChromafix({
+  tokens: {
+    <span class="s">"--pv-bg"</span>:      <span class="s">"background"</span>,
+    <span class="s">"--pv-surface"</span>: <span class="s">"surface"</span>,
+    <span class="s">"--pv-border"</span>:  <span class="s">"border"</span>,
+    <span class="s">"--pv-text"</span>:    <span class="s">"text"</span>,
+    <span class="s">"--pv-muted"</span>:   <span class="s">"muted"</span>,
+    <span class="s">"--pv-primary"</span>: <span class="s">"primary"</span>,
+  },
+  target: <span class="s">"#preview"</span>, <span class="c">// omit to recolor the whole page</span>
+});</pre>
+      </section>
+
+      <footer>
+        <span>MIT · built for the web, not for overlays</span>
+        <span>
+          <a href="https://www.npmjs.com/package/chromafix-a11y">chromafix-a11y</a> ·
+          <a href="https://github.com/Wora-Ben/chromafix">Wora-Ben/chromafix</a>
+        </span>
+      </footer>
+    </div>
+
+    <script type="module">
+      import {
+        createChromafix,
+        PALETTES,
+        CVD_TYPES,
+        ROLES,
+      } from "https://esm.sh/chromafix-a11y";
+
+      const PLAIN = {
+        protanopia: "Red / green · no red",
+        protanomaly: "Red / green · weak red",
+        deuteranopia: "Red / green · no green",
+        deuteranomaly: "Red / green · weak green",
+        tritanopia: "Blue / yellow",
+        tritanomaly: "Blue / yellow · mild",
+        achromatopsia: "No colour",
+      };
+
+      document.getElementById("pals").innerHTML = CVD_TYPES.map(
+        (type) => `
+          <div class="pal">
+            <div class="pal__meta">
+              <b>${type}</b>
+              <span>${PLAIN[type]}</span>
+            </div>
+            <div class="pal__chips">
+              ${ROLES.map(
+                (role) =>
+                  `<i style="background:${PALETTES[type][role]}" title="${role}: ${PALETTES[type][role]}"></i>`,
+              ).join("")}
+            </div>
+          </div>`,
+      ).join("");
+
+      const preview = document.getElementById("preview");
+      const schemeButtons = [...document.querySelectorAll(".scheme button")];
+
+      for (const button of schemeButtons) {
+        button.addEventListener("click", () => {
+          preview.dataset.scheme = button.dataset.scheme;
+          for (const other of schemeButtons) {
+            other.setAttribute("aria-pressed", String(other === button));
+          }
+        });
+      }
+
+      createChromafix({
+        target: "#preview",
+        tokens: {
+          "--pv-bg": "background",
+          "--pv-surface": "surface",
+          "--pv-border": "border",
+          "--pv-text": "text",
+          "--pv-muted": "muted",
+          "--pv-primary": "primary",
+        },
+      });
+    </script>
+  </body>
+</html>

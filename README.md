@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Wora-Ben/chromafix/main/assets/chromafix.png" alt="chromafix colorblind accessibility library" width="640" />
+<img src="https://raw.githubusercontent.com/Wora-Ben/chromafix/main/assets/chromafix.webp" alt="chromafix colorblind accessibility library" width="640" />
 
 <h1>chromafix</h1>
 
@@ -14,6 +14,8 @@ and your whole palette is swapped for one whose colors stay distinguishable for 
 [![Zero dependencies](https://img.shields.io/badge/dependencies-0-009e73)](./package.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-555)](./LICENSE)
 
+**[▶ Live demo](https://wora-ben.github.io/chromafix/)**
+
 </div>
 
 ---
@@ -24,7 +26,7 @@ that reads those variables recolors instantly, and turning it off removes them.
 That's the whole engine: **O(1), no DOM walking, no repaint filter.**
 
 - 🎨 **7 deficiency types**, each with its own defined, colorblind-safe palette.
-- ⚡ **Zero runtime dependencies**, ~2 KB core, any framework or none.
+- ⚡ **Zero runtime dependencies**, ~3.5 KB min+gzip, any framework or none.
 - 🌗 **Clean on light or dark pages.** The widget auto-picks a contrasting skin.
 - ♿ **Exemplary a11y:** keyboard-operable, ARIA-correct, respects `prefers-reduced-motion`.
 - ⚛️ **First-class React adapter**, SSR / Next.js App Router safe.
@@ -185,8 +187,8 @@ predictable, and filter-free.
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md). A local demo
-lives at `examples/vanilla.html`; run `npm run build` first, then open it in a browser.
+Contributions are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md). The page in
+`demo/` is what gets published to GitHub Pages; serve that folder to run it locally.
 
 ## License
 
