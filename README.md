@@ -8,15 +8,11 @@
 Drop a floating button on your site; visitors pick a color-vision-deficiency type
 and your whole palette is swapped for one whose colors stay distinguishable for them.
 
-[![CI](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml/badge.svg)](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-555)](./LICENSE)
-[![Zero dependencies](https://img.shields.io/badge/dependencies-0-009e73)](./package.json)
-[![Types included](https://img.shields.io/badge/types-included-3178c6)](./package.json)
-
-<!-- After the first `npm publish`, add these live badges:
 [![npm version](https://img.shields.io/npm/v/chromafix-a11y?color=0072b2)](https://www.npmjs.com/package/chromafix-a11y)
 [![minzipped size](https://img.shields.io/bundlephobia/minzip/chromafix-a11y?color=009e73)](https://bundlephobia.com/package/chromafix-a11y)
--->
+[![CI](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml/badge.svg)](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml)
+[![Zero dependencies](https://img.shields.io/badge/dependencies-0-009e73)](./package.json)
+[![License: MIT](https://img.shields.io/badge/license-MIT-555)](./LICENSE)
 
 </div>
 
