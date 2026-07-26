@@ -1,0 +1,54 @@
+name: Bug report
+description: Something isn't working as documented
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a report. Please fill in the details below.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+      placeholder: Selecting "Deuteranopia" does not recolor …
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: A minimal, reproducible example. A CodeSandbox/StackBlitz link is ideal.
+      placeholder: |
+        1. createChromafix({ tokens: { … } })
+        2. Open the widget and pick …
+        3. See …
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: chromafix version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: entry
+    attributes:
+      label: Which entry point?
+      options:
+        - chromafix (vanilla)
+        - chromafix/react
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Browser + version, framework + version (e.g. Chrome 120, Next.js 16).
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else?
+      description: Console errors, screenshots, or context.

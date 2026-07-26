@@ -27,6 +27,10 @@
   },
   "type": "module",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "files": [
     "dist",
     "CHANGELOG.md"

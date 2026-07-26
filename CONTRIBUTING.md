@@ -3,6 +3,11 @@
 Thanks for helping make the web more accessible! Contributions of all sizes are
 welcome — bug reports, docs, refined palettes, new framework adapters.
 
+This project follows a [Code of Conduct](./CODE_OF_CONDUCT.md); by participating
+you agree to uphold it. To report a security issue, see our
+[security policy](./SECURITY.md) — please don't open a public issue for
+vulnerabilities.
+
 ## Getting started
 
 ```sh
