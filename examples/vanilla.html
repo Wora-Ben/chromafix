@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>chromafix — vanilla demo</title>
+    <style>
+      :root {
+        --brand-bg: #ffffff;
+        --brand-surface: #f2f5fa;
+        --brand-border: #e3e8f0;
+        --brand-text: #1a2c4e;
+        --brand-muted: #647289;
+        --brand-accent: #c2410c;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 0;
+        padding: 2.5rem clamp(1rem, 5vw, 4rem);
+        background: var(--brand-bg);
+        color: var(--brand-text);
+      }
+      h1 { margin: 0 0 0.5rem; }
+      .accent { color: var(--brand-accent); }
+      p { color: var(--brand-muted); max-width: 48ch; }
+      .card {
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+        background: var(--brand-surface);
+        border: 1px solid var(--brand-border);
+        border-radius: 12px;
+      }
+      .btn {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.6rem 1.1rem;
+        border-radius: 999px;
+        background: var(--brand-accent);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Design <span class="accent">critical systems.</span></h1>
+    <p>
+      Pick a vision type from the floating button. The whole palette — heading
+      accent, card, button — is swapped for colors that stay distinguishable for
+      that type. Your choice is remembered on reload.
+    </p>
+    <div class="card">
+      <strong>Areas of expertise</strong>
+      <p>Web &amp; mobile · information systems · SCADA supervision</p>
+      <a class="btn" href="#">Start a project</a>
+    </div>
+
+    <script type="module">
+      import { createChromafix } from "../dist/index.js";
+      createChromafix({
+        tokens: {
+          "--brand-bg": "background",
+          "--brand-surface": "surface",
+          "--brand-border": "border",
+          "--brand-text": "text",
+          "--brand-muted": "muted",
+          "--brand-accent": "primary",
+        },
+      });
+    </script>
+  </body>
+</html>

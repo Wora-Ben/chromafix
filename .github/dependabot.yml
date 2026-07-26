@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+    ignore:
+      # tsup's bundled rollup-plugin-dts doesn't support the TypeScript 7
+      # compiler API yet — hold at 5.x until it does.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+    labels:
+      - dependencies
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - github-actions

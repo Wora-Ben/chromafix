@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/Wora-Ben/chromafix/discussions
+    about: Ask questions and share ideas with the community.
+  - name: Security vulnerability
+    url: https://github.com/Wora-Ben/chromafix/security/advisories/new
+    about: Please report vulnerabilities privately, not as public issues.
