@@ -1,18 +1,12 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Wora-Ben/chromafix/main/assets/chromafix.webp" alt="chromafix colorblind accessibility library" width="640" />
-
-<h1>chromafix</h1>
+<img src="https://raw.githubusercontent.com/Wora-Ben/chromafix/main/assets/chromafix.webp" alt="chromafix: colorblind accessibility library" width="640" />
 
 **A framework-agnostic colorblind-safe palette switcher.**
 Drop a floating button on your site; visitors pick a color-vision-deficiency type
 and your whole palette is swapped for one whose colors stay distinguishable for them.
 
-[![npm version](https://img.shields.io/npm/v/chromafix-a11y?color=0072b2)](https://www.npmjs.com/package/chromafix-a11y)
-[![minzipped size](https://img.shields.io/bundlephobia/minzip/chromafix-a11y?color=009e73)](https://bundlephobia.com/package/chromafix-a11y)
-[![CI](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml/badge.svg)](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml)
-[![Zero dependencies](https://img.shields.io/badge/dependencies-0-009e73)](https://github.com/Wora-Ben/chromafix/blob/main/package.json)
-[![License: MIT](https://img.shields.io/badge/license-MIT-555)](https://github.com/Wora-Ben/chromafix/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/chromafix-a11y?color=0072b2)](https://www.npmjs.com/package/chromafix-a11y) [![minzipped size](https://img.shields.io/bundlephobia/minzip/chromafix-a11y?color=009e73)](https://bundlephobia.com/package/chromafix-a11y) [![CI](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml/badge.svg)](https://github.com/Wora-Ben/chromafix/actions/workflows/ci.yml) [![Zero dependencies](https://img.shields.io/badge/dependencies-0-009e73)](https://github.com/Wora-Ben/chromafix/blob/main/package.json) [![License: MIT](https://img.shields.io/badge/license-MIT-555)](https://github.com/Wora-Ben/chromafix/blob/main/LICENSE)
 
 **[▶ Live demo](https://wora-ben.github.io/chromafix/)**
 
@@ -20,37 +14,20 @@ and your whole palette is swapped for one whose colors stay distinguishable for 
 
 ---
 
-chromafix doesn't filter pixels. It remaps your **CSS variables**. Selecting a type
-sets your color tokens inline on `:root` to a defined safe palette; every element
-that reads those variables recolors instantly, and turning it off removes them.
-**No DOM walking, no repaint filter.**
+- 🎨 **7 deficiency types**, each with its own palette.
+- 🌗 **Light and dark palettes**, following `prefers-color-scheme` or your own toggle.
+- ♿ **Keyboard and screen-reader operable**, and respects `prefers-reduced-motion`.
+- ⚛️ **React adapter**, safe in SSR and the Next.js App Router.
+- 📦 **Zero dependencies**, typed, ESM and CJS.
 
-- 🎨 **7 deficiency types**, each with its own defined, colorblind-safe palette.
-- ⚡ **Zero runtime dependencies**, any framework or none.
-- 🌗 **Light and dark palettes.** Follows `prefers-color-scheme`, or your own toggle.
-- ♿ **Accessible controls:** keyboard-operable, ARIA-correct, respects `prefers-reduced-motion`.
-- ⚛️ **First-class React adapter**, SSR / Next.js App Router safe.
-- 🔒 **Fully typed**, ships ESM + CJS + `.d.ts`. **MIT licensed.**
-
-## Install
+## Quick start
 
 ```sh
 npm install chromafix-a11y
 ```
 
-## Quick start
-
-Your site's colors already live in CSS variables:
-
-```css
-:root {
-  --brand-bg: #ffffff;
-  --brand-text: #1a2c4e;
-  --brand-accent: #c2410c;
-}
-```
-
-Tell chromafix which variable plays which **role**:
+Your site's colors already live in CSS variables. Tell chromafix which variable
+plays which **role**:
 
 ```js
 import { createChromafix } from "chromafix-a11y";
@@ -64,9 +41,9 @@ createChromafix({
 });
 ```
 
-Pick **Deuteranopia** and `--brand-accent` becomes a distinguishable orange,
-`--brand-text` a safe dark, and so on, across the whole site at once. The choice
-is remembered in `localStorage`.
+That's the whole setup. A floating button appears; pick **Deuteranopia** and
+`--brand-accent` becomes a distinguishable amber, `--brand-text` a safe dark, and
+so on across the site at once. The choice is remembered in `localStorage`.
 
 ### React / Next.js
 
@@ -97,11 +74,11 @@ The core is plain DOM with no dependencies, so anything that can run code on
 mount works. Only React gets a dedicated adapter; everywhere else you call
 `createChromafix()` yourself and `destroy()` on teardown.
 
-| Framework                      | Integration                                            |
-| ------------------------------ | ------------------------------------------------------ |
-| React, Next.js                 | `<ColorblindWidget />` from `chromafix-a11y/react`      |
-| Vue, Svelte, Solid, Angular 20+| `createChromafix()` in your mount hook                 |
-| Vanilla, CDN                   | `createChromafix()` once the page has loaded            |
+| Framework                       | Integration                                       |
+| ------------------------------- | ------------------------------------------------- |
+| React, Next.js                  | `<ColorblindWidget />` from `chromafix-a11y/react` |
+| Vue, Svelte, Solid, Angular 20+ | `createChromafix()` in your mount hook             |
+| Vanilla, CDN                    | `createChromafix()` once the page has loaded       |
 
 ```js
 // Vue
@@ -121,10 +98,10 @@ core entry has no such requirement.
 
 ## How it works
 
-You map each of your CSS variables to one of six semantic **roles**. chromafix keeps
-a defined palette for every deficiency type and, on selection, writes the matching
-color for each role straight onto the target element's inline style, which always
-wins over stylesheet rules. No specificity games, no `!important`.
+chromafix doesn't filter pixels. You map each of your CSS variables to one of six
+semantic **roles**, and on selection it writes the matching color for each role
+straight onto the target element's inline style, which always wins over
+stylesheet rules. No DOM walking, no repaint filter, no `!important`.
 
 | Role         | Meaning                          |
 | ------------ | -------------------------------- |
@@ -147,17 +124,17 @@ The seven supported types (accents drawn from the [Okabe-Ito][okabe-ito] safe se
 | `target`      | `string \| HTMLElement`                                       | `document.documentElement` | Element the variables are set on (`:root`).              |
 | `position`    | `"bottom-right" \| "bottom-left" \| "top-right" \| "top-left"`| `"bottom-right"`           | Corner for the floating button.                          |
 | `theme`       | `"auto" \| "light" \| "dark"`                                 | `"auto"`                   | Widget skin. `auto` contrasts the page background.       |
-| `scheme`      | `"auto" \| "light" \| "dark"`                                 | `"auto"`                   | Palette set. `auto` follows `prefers-color-scheme`.      |
+| `scheme`      | `"auto" \| "light" \| "dark"`                                 | `"auto"`                   | Palette set. See [Dark mode](#dark-mode).                |
 | `defaultType` | `"off" \| CvdType`                                            | `"off"`                    | Selection used when nothing is stored yet.               |
 | `storageKey`  | `string`                                                      | `"chromafix:type"`         | `localStorage` key for the remembered choice.            |
-| `labels`      | `Partial<ChromafixLabels>`                                    | English                    | Override any visible string (see below).                 |
-| `nonce`       | `string`                                                      | none                       | CSP nonce for the injected stylesheet (see below).       |
-| `headless`    | `boolean`                                                     | `false`                    | No button, no panel, no stylesheet. You render the UI.   |
+| `labels`      | `Partial<ChromafixLabels>`                                    | English                    | Override any visible string. See [Labels and i18n](#labels-and-i18n). |
+| `nonce`       | `string`                                                      | none                       | Nonce for the injected stylesheet. See [CSP](#content-security-policy). |
+| `headless`    | `boolean`                                                     | `false`                    | No UI at all. See [Bring your own UI](#bring-your-own-ui). |
 | `onChange`    | `(type) => void`                                              | none                       | Called whenever the selection changes.                   |
 
 `createChromafix()` returns `{ setType, getType, setScheme, getScheme, toggleOpen, destroy }`.
 
-### Dark mode
+## Dark mode
 
 Every type has a light and a dark palette. On `"auto"` the library follows the
 OS `prefers-color-scheme` and keeps tracking it, so an active palette flips
@@ -176,7 +153,7 @@ chromafix.getScheme(); // "light" | "dark", with "auto" already resolved
 The palette is written inline, so it beats your stylesheet. Without `setScheme`,
 a site theme toggle does nothing while a type is active.
 
-### Labels & i18n
+## Labels and i18n
 
 Every visible string is overridable. Each option label is a plain string, or an
 `{ name, hint }` object that adds a dimmed subtitle. Use the subtitle for the
@@ -195,7 +172,7 @@ createChromafix({
 });
 ```
 
-### Content Security Policy
+## Content Security Policy
 
 The widget injects one `<style>` element. Under a `style-src` policy without
 `'unsafe-inline'` the browser blocks it and the widget mounts unstyled: the
@@ -278,6 +255,15 @@ export class ThemeComponent implements OnInit, OnDestroy {
 Because your own template renders the controls, every click already runs inside
 Angular's zone, and Vue, Svelte and Solid work the same way.
 
+## Accessibility
+
+The widget's own controls:
+
+- A real `<button>` with `aria-expanded` / `aria-controls` disclosure.
+- Options are a native `<fieldset>` radio group, so arrow-key navigation is free.
+- **Escape** closes the panel and returns focus to the button; outside-click dismisses.
+- High-contrast focus-visible rings; all animation gated behind `prefers-reduced-motion`.
+
 ## Low-level API
 
 Skip the UI and drive the palette yourself:
@@ -305,16 +291,7 @@ CVD_TYPES;                  // readonly ["protanopia", …]
 ROLES;                      // readonly ["background", …]
 ```
 
-## Accessibility
-
-The widget's own controls:
-
-- A real `<button>` with `aria-expanded` / `aria-controls` disclosure.
-- Options are a native `<fieldset>` radio group, so arrow-key navigation is free.
-- **Escape** closes the panel and returns focus to the button; outside-click dismisses.
-- High-contrast focus-visible rings; all animation gated behind `prefers-reduced-motion`.
-
-## SSR & bundling
+## SSR and bundling
 
 Every DOM, `window`, and `localStorage` access is guarded and nothing runs at
 import time, so importing or calling chromafix in a Node/SSR context is a no-op.
