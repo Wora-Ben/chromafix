@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { applyPalette, createChromafix, CVD_TYPES } from "../src/core/index";
+import { applyPalette, CVD_TYPES, createChromafix } from "../src/core/index";
 
 // With no DOM (Node/SSR), importing and calling must never throw.
 describe("SSR safety", () => {
@@ -11,8 +11,10 @@ describe("SSR safety", () => {
   it("createChromafix returns a harmless no-op instance", () => {
     const cf = createChromafix();
     expect(cf.getType()).toBe("off");
+    expect(cf.getScheme()).toBe("light");
     expect(() => {
       cf.setType("protanopia");
+      cf.setScheme("dark");
       cf.toggleOpen();
       cf.destroy();
     }).not.toThrow();

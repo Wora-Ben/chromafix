@@ -519,10 +519,10 @@ createChromafix({
     <script type="module">
       import {
         createChromafix,
-        PALETTES,
+        paletteFor,
         CVD_TYPES,
         ROLES,
-      } from "https://esm.sh/chromafix-a11y";
+      } from "https://esm.sh/chromafix-a11y@latest";
 
       const PLAIN = {
         protanopia: "Red / green · no red",
@@ -534,8 +534,12 @@ createChromafix({
         achromatopsia: "No colour",
       };
 
-      document.getElementById("pals").innerHTML = CVD_TYPES.map(
-        (type) => `
+      const pals = document.getElementById("pals");
+
+      function renderPalettes(scheme) {
+        pals.innerHTML = CVD_TYPES.map((type) => {
+          const palette = paletteFor(type, scheme);
+          return `
           <div class="pal">
             <div class="pal__meta">
               <b>${type}</b>
@@ -544,26 +548,19 @@ createChromafix({
             <div class="pal__chips">
               ${ROLES.map(
                 (role) =>
-                  `<i style="background:${PALETTES[type][role]}" title="${role}: ${PALETTES[type][role]}"></i>`,
+                  `<i style="background:${palette[role]}" title="${role}: ${palette[role]}"></i>`,
               ).join("")}
             </div>
-          </div>`,
-      ).join("");
+          </div>`;
+        }).join("");
+      }
 
       const preview = document.getElementById("preview");
       const schemeButtons = [...document.querySelectorAll(".scheme button")];
 
-      for (const button of schemeButtons) {
-        button.addEventListener("click", () => {
-          preview.dataset.scheme = button.dataset.scheme;
-          for (const other of schemeButtons) {
-            other.setAttribute("aria-pressed", String(other === button));
-          }
-        });
-      }
-
-      createChromafix({
+      const chromafix = createChromafix({
         target: "#preview",
+        scheme: "light",
         tokens: {
           "--pv-bg": "background",
           "--pv-surface": "surface",
@@ -573,6 +570,22 @@ createChromafix({
           "--pv-primary": "primary",
         },
       });
+
+      renderPalettes("light");
+
+      for (const button of schemeButtons) {
+        button.addEventListener("click", () => {
+          const scheme = button.dataset.scheme;
+          // The attribute styles the preview while no type is active; setScheme
+          // swaps the palette set the library writes once one is.
+          preview.dataset.scheme = scheme;
+          chromafix.setScheme(scheme);
+          renderPalettes(scheme);
+          for (const other of schemeButtons) {
+            other.setAttribute("aria-pressed", String(other === button));
+          }
+        });
+      }
     </script>
   </body>
 </html>

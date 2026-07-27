@@ -1,7 +1,10 @@
-import type { CvdType, Role } from "./palettes";
+import type { CvdType, Role, Scheme } from "./palettes";
 
 /** A deficiency type to apply, or `"off"`. */
 export type ChromafixType = CvdType | "off";
+
+/** Which palette set to draw from. `"auto"` follows `prefers-color-scheme`. */
+export type ChromafixScheme = Scheme | "auto";
 
 export type ChromafixPosition =
   | "bottom-right"
@@ -44,14 +47,29 @@ export interface ChromafixOptions {
   position?: ChromafixPosition;
   /** Widget skin. Defaults to `"auto"`. */
   theme?: ChromafixTheme;
+  /**
+   * Light or dark palettes. Defaults to `"auto"`, which follows
+   * `prefers-color-scheme` and keeps following it as the preference changes.
+   */
+  scheme?: ChromafixScheme;
   /** Selection restored when storage is empty. Defaults to `"off"`. */
   defaultType?: ChromafixType;
   /** localStorage key for the persisted selection. Defaults to `"chromafix:type"`. */
   storageKey?: string;
   /** Override any visible strings (for i18n). */
   labels?: Partial<ChromafixLabels>;
-  /** Run the engine without the floating button. Defaults to `false`. */
-  hideButton?: boolean;
+  /**
+   * CSP nonce for the injected stylesheet. Required under a `style-src` policy
+   * without `'unsafe-inline'`, which would otherwise block it and leave the
+   * widget unstyled. Ignored when `headless`, which injects nothing.
+   */
+  nonce?: string;
+  /**
+   * Run the engine with no UI of its own: no button, no panel, no injected
+   * stylesheet. You render the controls and drive the instance. Defaults to
+   * `false`.
+   */
+  headless?: boolean;
   /** Called whenever the selection changes. */
   onChange?: (type: ChromafixType) => void;
 }
@@ -59,6 +77,10 @@ export interface ChromafixOptions {
 export interface ChromafixInstance {
   setType: (type: ChromafixType) => void;
   getType: () => ChromafixType;
+  /** Switch palette sets at runtime. */
+  setScheme: (scheme: ChromafixScheme) => void;
+  /** The scheme currently in effect, with `"auto"` already resolved. */
+  getScheme: () => Scheme;
   toggleOpen: () => void;
   destroy: () => void;
 }

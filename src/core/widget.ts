@@ -2,11 +2,7 @@
 // <input type="radio"> in a <fieldset> gives keyboard nav for free; the panel
 // is a non-modal disclosure closed by Escape or outside-click.
 
-import type {
-  ChromafixLabels,
-  ChromafixPosition,
-  ChromafixType,
-} from "./types";
+import type { ChromafixLabels, ChromafixPosition, ChromafixType } from "./types";
 
 const OPTION_ORDER: ChromafixType[] = [
   "off",
@@ -30,6 +26,7 @@ export interface WidgetCallbacks {
 
 export interface WidgetHandle {
   setChecked: (type: ChromafixType) => void;
+  setTheme: (theme: "light" | "dark") => void;
   toggle: () => void;
   destroy: () => void;
 }
@@ -88,7 +85,8 @@ export function mountWidget(
     input.addEventListener("change", () => callbacks.onSelect(type));
 
     const raw = labels[type];
-    const { name, hint } = typeof raw === "string" ? { name: raw, hint: undefined } : raw;
+    const { name, hint } =
+      typeof raw === "string" ? { name: raw, hint: undefined } : raw;
 
     const text = document.createElement("span");
     text.className = "chromafix__text";
@@ -146,6 +144,9 @@ export function mountWidget(
     setChecked(type) {
       const input = inputs.get(type);
       if (input) input.checked = true;
+    },
+    setTheme(next) {
+      root.dataset.theme = next;
     },
     toggle: () => setOpen(!open),
     destroy() {

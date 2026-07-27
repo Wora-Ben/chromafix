@@ -20,6 +20,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
+      - run: npm run lint
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # Catches a broken exports map, or types that resolve wrong from CJS.
+      - run: npm run verify:package

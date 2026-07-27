@@ -2,11 +2,8 @@
 
 ## Supported Versions
 
-chromafix is pre-1.0; security fixes land on the latest published release.
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
+chromafix is pre-1.0. Security fixes land on the latest published release; older
+minors are not patched.
 
 ## Reporting a Vulnerability
 

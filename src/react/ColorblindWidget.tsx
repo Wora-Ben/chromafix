@@ -17,35 +17,43 @@ export function ColorblindWidget(props: ColorblindWidgetProps): null {
     target,
     position,
     theme,
+    scheme,
     defaultType,
     storageKey,
-    hideButton,
+    nonce,
+    headless,
     labels,
   } = props;
 
+  // tokens and labels are object literals, usually written inline at the call
+  // site, so depending on their identity would remount the widget every single
+  // render. The deps below compare them by value instead.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: compared by value
   useEffect(() => {
     const inst = createChromafix({
       tokens,
       target,
       position,
       theme,
+      scheme,
       defaultType,
       storageKey,
-      hideButton,
+      nonce,
+      headless,
       labels,
       onChange: (type) => onChange.current?.(type),
     });
     return () => inst.destroy();
-    // tokens/labels compared by value to tolerate inline literals.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     JSON.stringify(tokens),
     target,
     position,
     theme,
+    scheme,
     defaultType,
     storageKey,
-    hideButton,
+    nonce,
+    headless,
     JSON.stringify(labels),
   ]);
 

@@ -1,8 +1,8 @@
 /**
  * tsup/esbuild strips the `"use client"` directive from bundled output. The
  * React adapter must ship it so frameworks like Next.js (App Router) treat it
- * as a client-component boundary. This restores it on the React entry only —
- * the framework-agnostic core must stay directive-free.
+ * as a client-component boundary. This restores it on the React entry only; the
+ * framework-agnostic core must stay directive-free.
  */
 import { readFile, writeFile } from "node:fs/promises";
 

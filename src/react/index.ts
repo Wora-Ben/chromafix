@@ -1,16 +1,25 @@
 // chromafix React adapter. `<ColorblindWidget />` mounts the engine in a client
 // effect. Requires `react` (a peer dependency).
 
-export { ColorblindWidget } from "./ColorblindWidget";
-export type { ColorblindWidgetProps } from "./ColorblindWidget";
-export { CVD_TYPES, ROLES, PALETTES } from "../core/palettes";
-export type { CvdType, Role, Palette } from "../core/palettes";
+export { applyPalette, createChromafix, DEFAULT_LABELS } from "../core/engine";
+export type { CvdType, Palette, Role, Scheme } from "../core/palettes";
+export {
+  CVD_TYPES,
+  PALETTES,
+  PALETTES_DARK,
+  paletteFor,
+  ROLES,
+} from "../core/palettes";
 export type {
-  ChromafixType,
-  ChromafixPosition,
-  ChromafixTheme,
+  ChromafixInstance,
   ChromafixLabels,
   ChromafixOptions,
-  ChromafixInstance,
+  ChromafixPosition,
+  ChromafixScheme,
+  ChromafixTheme,
+  ChromafixType,
+  OptionLabel,
   TokenMap,
 } from "../core/types";
+export type { ColorblindWidgetProps } from "./ColorblindWidget";
+export { ColorblindWidget } from "./ColorblindWidget";

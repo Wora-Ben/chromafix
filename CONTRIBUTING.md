@@ -22,7 +22,9 @@ npm test
 1. Open an issue first for anything non-trivial so we can agree on the approach.
 2. Branch from `main`.
 3. Keep the core dependency-free and SSR-safe (guard every DOM access).
-4. Add or update tests (`npm test`) and make sure `npm run typecheck` passes.
+4. Add or update tests (`npm test`) and make sure `npm run lint` and
+   `npm run typecheck` pass. Formatting and lint rules come from
+   [Biome](https://biomejs.dev); `npm run format` fixes what is fixable.
 5. For anything that changes the on-screen result, sanity-check the demo: serve
    `demo/` (for example `npx serve demo`) and open it in a browser. It loads the
    published package, so point its import at `../dist/index.js` after

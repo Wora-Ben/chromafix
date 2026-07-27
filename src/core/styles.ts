@@ -136,16 +136,38 @@ const CSS = `
 }
 `;
 
-export function ensureStyles(): void {
+// Instances share one stylesheet, so the last one out removes it. The count
+// lives on the element so it dies with it, staying correct even if something
+// else removes the element (HMR, a second copy of the module).
+function refs(style: HTMLElement): number {
+  return Number(style.dataset.refs) || 0;
+}
+
+export function ensureStyles(nonce?: string): void {
   if (typeof document === "undefined") return;
-  if (document.getElementById(STYLE_ID)) return;
+  const existing = document.getElementById(STYLE_ID);
+  if (existing) {
+    existing.dataset.refs = String(refs(existing) + 1);
+    return;
+  }
   const style = document.createElement("style");
   style.id = STYLE_ID;
+  style.dataset.refs = "1";
+  if (nonce) {
+    // The attribute is what CSP reads on insertion; browsers that implement
+    // nonce hiding blank it afterwards but leave the property readable.
+    style.setAttribute("nonce", nonce);
+    style.nonce = nonce;
+  }
   style.textContent = CSS;
   document.head.appendChild(style);
 }
 
 export function removeStyles(): void {
   if (typeof document === "undefined") return;
-  document.getElementById(STYLE_ID)?.remove();
+  const style = document.getElementById(STYLE_ID);
+  if (!style) return;
+  const next = refs(style) - 1;
+  if (next > 0) style.dataset.refs = String(next);
+  else style.remove();
 }
